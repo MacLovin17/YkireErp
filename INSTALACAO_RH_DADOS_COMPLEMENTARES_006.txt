@@ -1,0 +1,55 @@
+YKIRE ERP — Atualização 006 | RH: cadastro completo
+====================================================
+Esta atualização parte do YKIRE ERP já atualizado com certificados/005.
+
+NOVOS DADOS:
+- RG (ou documento de identidade)
+- CNH: A, B, C, D, E, AB, AC, AD e AE (não existe categoria F no Brasil)
+- Uniforme: PP, P, M, G, GG, XG, XXG, EXG
+- Bota: numeração 30 a 50
+- Endereço: CEP, logradouro, número, complemento, bairro, cidade e UF
+- Dependentes: nome, vínculo e data de nascimento opcional (máximo de 20)
+
+ATENÇÃO: dados pessoais. Não enviar print com CPF, RG, endereços ou dependentes.
+Não registrar dependentes que não sejam necessários ao processo administrativo.
+
+ORDEM DE INSTALAÇÃO EM PRODUÇÃO:
+1. Fazer backup completo do MySQL e dos arquivos do site.
+2. Pausar alterações nos cadastros durante a instalação.
+3. No phpMyAdmin, selecionar o banco do YKIRE e importar
+   api/migrations/005_rh_dados_complementares.sql UMA ÚNICA VEZ.
+   Não importar schema.sql em banco existente.
+4. No cPanel, substituir somente public_html/Ykire/api/index.php pelo novo.
+   NÃO substituir nem editar api/config.php e os .htaccess.
+5. Em seu código-fonte React (VS Code), substituir
+   src/Pages/Funcionarios.jsx.
+6. Na pasta raiz do React, executar: npm run build
+   Confirmar que dist/index.html referencia /Ykire/assets/...
+7. Enviar o CONTEÚDO de dist (index.html e assets/) para
+   public_html/Ykire/. Preservar api/ e os dois .htaccess.
+8. Abrir o sistema e atualizar com Ctrl+F5.
+
+TESTE:
+- Cadastro RH > Novo funcionário > Dados funcionais, Documentos,
+  Endereço, Uniformes e Dependentes.
+- Adicionar dependente fictício, salvar, editar e conferir persistência.
+- Confirmar que usuário com acesso apenas a Estoque/SSMA busca matrícula,
+  mas não recebe CPF, RG, endereço ou dependentes na API employees.
+- Testar edição de funcionário existente e preenchimento de dados opcionais.
+
+BANCO:
+- Novas colunas somente em employees.
+- Nova tabela employee_dependents.
+- Não modifica saldos, estoque, EPI, ferramentas, relatórios ou certificados.
+
+VALIDAÇÃO:
+- Sintaxe PHP e JS/JSX conferida.
+- Migração em MySQL real, testes integrados e compilação npm pendentes
+  de execução na hospedagem/VS Code do usuário.
+
+SEGURANÇA:
+- Consulta privada: rota employees/detail (somente master/admin RH,
+  restrita às unidades autorizadas). A lista pública do RH e as consultas
+  por matrícula omitem RG, CPF completo, endereço e dependentes.
+- Confirme as políticas de acesso, retenção e proteção dos dados conforme
+  a LGPD antes de começar a cadastrar dados pessoais reais.

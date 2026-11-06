@@ -1,0 +1,18 @@
+import React, {useEffect,useMemo,useState} from 'react';
+import {api,selectedWarehouse} from '@/api/http';
+import PageHeader from '@/components/PageHeader';
+import {Link} from 'react-router-dom';
+import {BadgeDollarSign, Search, ArrowLeft, Save} from 'lucide-react';
+import {brl,qtyLabel} from '@/lib/sales';
+import {toast} from 'sonner';
+export default function PrecosVendas(){
+ const allWarehouses=selectedWarehouse()==='all';
+ const [rows,setRows]=useState([]);const [values,setValues]=useState({});const [search,setSearch]=useState('');const [saving,setSaving]=useState('');
+ const load=()=>api('sales/products').then(r=>{setRows(r);setValues(Object.fromEntries(r.map(p=>[p.id,p.sale_price==null?'':String(p.sale_price)])));}).catch(e=>toast.error(e.message));
+ useEffect(()=>{if(!allWarehouses)load();},[allWarehouses]);
+ const filtered=useMemo(()=>rows.filter(p=>(p.name+' '+p.id).toLowerCase().includes(search.toLowerCase())),[rows,search]);
+ const save=async p=>{setSaving(p.id);try{if(values[p.id]==='')throw new Error('Informe um preço; zero é permitido, mas campo vazio não.');await api('sales/prices',{data:{product_id:p.id,sale_price:Number(values[p.id])}});toast.success('Preço atualizado para este almoxarifado.');await load();}catch(e){toast.error(e.message);}finally{setSaving('');}};
+ return <div className="max-w-6xl mx-auto px-4 py-6 sm:px-7 space-y-5"><PageHeader title="Preços de Venda" subtitle="Preços comerciais separados por almoxarifado; não alteram o custo médio" icon={BadgeDollarSign}/><Link to="/vendas" className="inline-flex gap-2 items-center text-sm text-indigo-700 font-semibold"><ArrowLeft className="w-4 h-4"/> Voltar às vendas</Link><div className="rounded-xl border bg-amber-50 border-amber-200 p-4 text-sm text-amber-900">Somente Master/Administrador pode definir preços. Um produto sem preço cadastrado não poderá ser vendido. Os custos internos de estoque permanecem sigilosos.</div>
+ {allWarehouses&&<div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl">Selecione um almoxarifado específico antes de editar preços.</div>}
+ {!allWarehouses&&<div className="bg-white rounded-xl border overflow-hidden"><div className="p-4 relative"><Search className="absolute w-4 h-4 top-7 left-7 text-slate-400"/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar código ou produto" className="h-10 border rounded-lg w-full pl-10 pr-3 text-sm"/></div><div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-slate-50"><tr>{['Código / Produto','Saldo','Preço atual','Novo preço (R$)',''].map(x=><th className="text-left p-4" key={x}>{x}</th>)}</tr></thead><tbody className="divide-y">{filtered.map(p=><tr key={p.id}><td className="p-4"><strong>#{p.id}</strong> — {p.name}<div className="text-xs text-slate-500">{p.unit}</div></td><td className="p-4">{qtyLabel(p.current_balance)}</td><td className="p-4 font-semibold">{p.sale_price===null?'Não configurado':brl(p.sale_price)}</td><td className="p-4"><input aria-label={`Preço de ${p.name}`} type="number" min="0" max="9999999.99" step="0.01" className="h-9 w-36 max-w-full rounded-lg border px-3" value={values[p.id]??''} onChange={e=>setValues(old=>({...old,[p.id]:e.target.value}))}/></td><td className="p-4"><button disabled={saving===p.id} onClick={()=>save(p)} className="bg-indigo-600 text-white rounded-lg px-3 py-2 flex gap-1 text-xs items-center disabled:opacity-50"><Save className="w-4 h-4"/> Salvar</button></td></tr>)}{!filtered.length&&<tr><td colSpan={5} className="py-12 text-center text-slate-500">Nenhum produto encontrado.</td></tr>}</tbody></table></div></div>}</div>;
+}

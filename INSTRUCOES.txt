@@ -1,0 +1,13 @@
+YKIRE ESTOQUE 2.0 — FIXAR RODAPE DA BARRA LATERAL
+
+1) Faça uma cópia do arquivo original src/components/Layout.jsx.
+2) Extraia este ZIP na pasta raiz do projeto React, mantendo src/components/Layout.jsx.
+3) No CMD/terminal do VS Code, execute: npm run build
+4) Na HostGator, faça backup e substitua apenas index.html e a pasta assets/ pelos arquivos novos da pasta dist/.
+5) Preserve api/, config.php e os dois arquivos .htaccess.
+6) Use Ctrl+F5 para recarregar o site.
+
+Correção: barra lateral com altura da viewport, menu rolável independentemente e rodapé (usuário/Sair) sempre visível.
+Não é necessário modificar o MySQL nem o PHP.
+
+Importante: antes de publicar, confira se o index.html do build referencia /Ykire/assets/ (e não /assets/).

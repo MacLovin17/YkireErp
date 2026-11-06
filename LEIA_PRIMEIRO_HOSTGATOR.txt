@@ -1,0 +1,25 @@
+YKIRE ESTOQUE 2.0 — ATUALIZAÇÃO FUNCIONÁRIOS, EPI E FERRAMENTAS
+================================================================
+Sua instalação /Ykire/ e o banco MySQL existentes devem ser preservados.
+
+1) Faça backup do banco prosegco_dev e de public_html/Ykire/api/index.php.
+2) Pause as movimentações de estoque.
+3) No phpMyAdmin, importe MIGRACAO_MYSQL_002.sql UMA ÚNICA VEZ.
+4) Confira as novas tabelas: employees, tool_assignments, tool_returns,
+   epi_deliveries; e a nova coluna movements.employee_id.
+5) Via Gerenciador de Arquivos, substitua SOMENTE o arquivo
+   public_html/Ykire/api/index.php pelo api/index.php deste ZIP.
+6) NÃO substitua config.php e NÃO substitua os .htaccess existentes.
+7) No seu PC, abra o ZIP FONTE completo; execute npm install se
+   necessário e npm run build dentro da pasta do projeto.
+8) Envie o CONTEÚDO da pasta dist gerada para public_html/Ykire/.
+   Preserve a pasta api/ e seu config.php da hospedagem.
+9) Confira os menus Funcionários, Ferramentas, EPI e Saída.
+10) Teste apenas com dados fictícios antes de liberar os usuários.
+
+O código foi verificado sintaticamente, mas ainda não foi testado
+em MySQL real nem compilado com todas as dependências neste ambiente.
+Não reimporte schema.sql na produção e não refaça a migração 001 CMP.
+
+Leia ATUALIZACAO_FUNCIONARIOS_EPI_FERRAMENTAS.md do pacote-fonte para
+procedimento completo e testes recomendados.

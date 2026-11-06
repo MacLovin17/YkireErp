@@ -1,0 +1,34 @@
+YKIRE ERP — CORREÇÃO 005: CERTIFICADOS IGUAIS AOS MODELOS DA PROSEG
+
+O QUE MUDA
+- Substitui texto genérico do ERP pela redação de cada certificado original.
+- Mantém o título, logotipo e faixas do documento Word na frente e o conteúdo programático no verso.
+- Reproduz data/local, nome e linhas de assinatura.
+- Corrige carregamento do fundo (PDF anterior tinha imagem inválida com 0x0 pixels).
+- Remove nome/data/instrutor antigo do fundo da Direção Defensiva.
+- Restaura o último tópico do conteúdo programático da NR-12.
+- Não imprime frases sobre o YKIRE ERP nem numeração administrativa no documento.
+
+INSTALAÇÃO
+1) NO VS CODE: Faça backup de src/lib/certificatePdf.js atual.
+2) Substitua src/lib/certificatePdf.js pelo arquivo deste pacote.
+3) Substitua public/certificate-templates/direcao_2.jpg e nr12_2.jpg.
+4) Execute npm run build. (Não foi possível testar o build neste ambiente.)
+5) NO CPANEL: envie o conteúdo atualizado de dist/ para public_html/Ykire/,
+   incluindo index.html, assets/ e certificate-templates/ (arquivos corrigidos).
+6) Preserve o diretório api/, config.php e .htaccess; não rode SQL.
+7) Abra o sistema, Ctrl+F5, e gere um certificado de TESTE com funcionário fictício.
+8) Confira frente/verso, dados, assinaturas, carga horária e logotipo antes de emitir certificados reais.
+
+ATENÇÃO SOBRE OS MODELOS DE ORIGEM
+- A NR-05 cita QSI QUALIDADE E INSPEÇÃO como ministrante original,
+  embora a assinatura da empresa esteja associada à Proseg.
+- O modelo Word NR-06 tem CNPJ 25.140.485/0001-40, diferente do
+  CNPJ 24.673.236/0001-57 impresso nos outros. Valide qual é o correto.
+- A NR-05 original cita dois dias, mas o formulário atual só armazena
+  uma data. Nesta versão, ele usa o dia selecionado. Para certificação
+  em períodos, precisaremos ampliar o cadastro de treinamentos.
+- Os fundamentos normativos foram preservados dos seus arquivos,
+  sem revisão de vigência legal. O SSMA deve validá-los antes da emissão.
+- As linhas de assinatura são áreas para assinatura real/autorizada;
+  não representam assinatura digital ou comprovação automática do curso.
